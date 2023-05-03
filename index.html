@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket.io Chat Example</title>
+  <!-- 注意socket.io版本要對應 -->
+  <script src="https://cdn.socket.io/socket.io-3.0.5.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <ul id="messages"></ul>
+  <form id="chat-form">
+    <input id="message-input" autocomplete="off" /><button>Send</button>
+  </form>
+  <script>
+    var socket = io('ws://localhost:4000');
+    console.log(socket);
+
+    $('#chat-form').submit(function(e) {
+      e.preventDefault();
+      socket.emit('chat message', $('#message-input').val());
+      $('#message-input').val('');
+      return false;
+    });
+
+    socket.on('chat message', function(msg) {
+      $('#messages').append($('<li>').text(msg));
+    });
+  </script>
+</body>
+</html>
