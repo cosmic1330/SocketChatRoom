@@ -8,7 +8,7 @@ app.get("/", function (req, res) {
 
 const server = require("http").Server(app);
 server.listen(4000, () => {
-  console.log("listening on *:4000");
+  console.log("Server listening on *:4000");
 });
 
 const io = require("socket.io")(server, {
@@ -16,7 +16,6 @@ const io = require("socket.io")(server, {
     origin: "*",
   },
 });
-
 io.sockets.on("connection", function (socket) {
   console.log("a user connected");
 
@@ -28,4 +27,16 @@ io.sockets.on("connection", function (socket) {
     console.log("message: " + msg);
     io.emit("chat message", msg);
   });
+});
+
+
+// listen work
+var zmq = require("zeromq"),
+  sock = zmq.socket("pull");
+
+sock.connect("tcp://127.0.0.1:3000");
+console.log("Worker connected to port 3000");
+
+sock.on("message", function(msg) {
+  console.log("work: %s", msg.toString());
 });
