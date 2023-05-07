@@ -1,31 +1,23 @@
 <script setup>
-import HelloWorld from "./components/HelloWorld.vue";
+import Part1 from "./components/Part1/index.vue";
+import Part2 from "./components/Part2/index.vue";
+import SideBar from "./components/SideBar.vue";
 </script>
 
 <template>
-  <div class="mb-3">
-    <label for="exampleFormControlInput1" class="form-label"
-      >Email address</label
-    >
-    <input
-      type="email"
-      class="form-control"
-      id="exampleFormControlInput1"
-      placeholder="name@example.com"
-    />
+  <div class="d-flex">
+    <SideBar />
+    <div class="container-fluid">
+      <div class="row row-cols-1 row-cols-lg-2 g-2 g-lg-3">
+        <div class="col">
+          <Part1 />
+        </div>
+        <div class="col bg-light">
+          <Part2 />
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="mb-3">
-    <label for="exampleFormControlTextarea1" class="form-label"
-      >Example textarea</label
-    >
-    <textarea
-      class="form-control"
-      id="exampleFormControlTextarea1"
-      rows="3"
-    ></textarea>
-  </div>
-  
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
 <style scoped>
