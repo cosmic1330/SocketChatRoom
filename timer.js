@@ -7,4 +7,4 @@ console.log("Producer bound to port 3000");
 setInterval(function () {
   console.log("sending work");
   sock.send(new Date());
-}, 1000);
+}, 5000);

@@ -17,26 +17,43 @@ const io = require("socket.io")(server, {
   },
 });
 io.sockets.on("connection", function (socket) {
-  console.log("a user connected");
-
+  console.log(`a user ${socket.id} connected`);
+  // 離線
   socket.on("disconnect", function () {
-    console.log("user disconnected");
+    console.log(`user ${socket.id} disconnected`);
   });
 
-  socket.on("chat message", function (msg) {
-    console.log("message: " + msg);
-    io.emit("chat message", msg);
+  // 加入指定的房間
+  socket.on("joinRoom", ({ room, nickName }) => {
+    socket.join(room);
+    socket.to(room).emit("join", `Client ${nickName} joined room ${room}`);
+  });
+
+  // 離開指定的房間
+  socket.on("leaveRoom", ({ room, nickName }) => {
+    socket.leave(room);
+    socket.to(room).emit("leave", `Client ${nickName} leaft room ${room}`);
+  });
+
+  // 傳送訊息至特定房間的成員
+  socket.on("messageRoom", ({ room, nickName, message }) => {
+    console.log({room, nickName, message})
+    socket.to(room).emit("message", {nickName, message});
+  });
+
+  socket.on("userBroadcast", function ({msg, nickName}) {
+    socket.broadcast.emit("userBroadcast", {msg, nickName});
   });
 });
 
-
 // listen work
 var zmq = require("zeromq"),
-  sock = zmq.socket("pull");
+zeromq = zmq.socket("pull");
 
-sock.connect("tcp://127.0.0.1:3000");
+zeromq.connect("tcp://127.0.0.1:3000");
 console.log("Worker connected to port 3000");
 
-sock.on("message", function(msg) {
+zeromq.on("message", function (msg) {
   console.log("work: %s", msg.toString());
+  io.emit("systemBroadcast", msg.toString());
 });

@@ -13,47 +13,8 @@
 </head>
 
 <body>
-  <div class="container-fluid">
-    <div class="row g-1">
-      <div class="col">
-        <div class="card">
-          <img src="https://fakeimg.pl/200x100/" class="card-img-top" alt="card-image">
-          <div class="card-body">
-            <h5 class="card-title">Card title1</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-              content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div>
-      <div class="col">
-        <div class="card">
-          <img src="https://fakeimg.pl/200x100/" class="card-img-top" alt="card-image">
-          <div class="card-body">
-            <h5 class="card-title">Card title2</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-              content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div>
-      <div class="col d-md-none">
-        <div class="card">
-          <img src="https://fakeimg.pl/200x100/" class="card-img-top" alt="card-image">
-          <div class="card-body">
-            <h5 class="card-title">Card title3</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-              content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
   <!-- out tailwind -->
+  <h1>你現在是玩比特幣的金城武</h1>
   <ul id="messages"></ul>
   <form id="chat-form">
     <input id="message-input" autocomplete="off" /><button>Send</button>
@@ -61,17 +22,34 @@
 
   <script>
     var socket = io('ws://localhost:4000'); // 可以使用ws或http協定
-    console.log(socket);
+    // joinRoom
+    socket.emit('joinRoom', { room:"BTC", nickName:"金城武" });
 
     $('#chat-form').submit(function (e) {
       e.preventDefault();
-      socket.emit('chat message', $('#message-input').val());
+      socket.emit('messageRoom', { room:"BTC", nickName:"金城武", message:$('#message-input').val() });
       $('#message-input').val('');
       return false;
     });
 
-    socket.on('chat message', function (msg) {
-      $('#messages').append($('<li>').text(msg));
+    socket.on('message', function ({nickName, message}) {
+      $('#messages').append($('<li>').text(`${nickName}:${message}`));
+    });
+
+    socket.on('join', function (message) {
+      $('#messages').append($('<li>').text(`${message}`));
+    });
+
+    socket.on('leave', function (message) {
+      $('#messages').append($('<li>').text(`${message}`));
+    });
+    
+    socket.on('userBroadcast', function ({msg, nickName}) {
+      $('#messages').append($('<li>').text(nickName+":"+msg));
+    });
+
+    socket.on('systemBroadcast', function (msg) {
+      $('#messages').append($('<li>').text("system:"+msg));
     });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"

@@ -1,7 +1,10 @@
 <script setup>
+import { provide } from "vue";
 import Part1 from "./components/Part1/index.vue";
 import Part2 from "./components/Part2/index.vue";
 import SideBar from "./components/SideBar.vue";
+import store from "./store";
+provide("GloableStore", store);
 </script>
 
 <template>
